@@ -55,21 +55,18 @@ if selected_tickers:
             cvar = ri.calculate_cvar(returns_data, confidence_level)
             drawdown = ri.calculate_drawdown(prices_data)
             max_dd = ri.max_drawdown(prices_data) 
-            # Extraction en float
-            var_param = float(var_param) if isinstance(var_param, (pd.Series, np.ndarray)) else var_param
-            var_mc = float(var_mc) if isinstance(var_mc, (pd.Series, np.ndarray)) else var_mc
-            cvar = float(cvar) if isinstance(cvar, (pd.Series, np.ndarray)) else cvar
-            max_dd = float(max_dd) if isinstance(max_dd, (pd.Series, np.ndarray)) else max_dd
 
-        
-          
+            # 🔹 Récupération des résultats pour chaque actif
+            selected_assets = returns_data.columns  # Liste des actifs sélectionnés
 
-            # 📊 Indicateurs Clés de Risque (Affichage sous forme de KPI Cards)
-            col1, col2, col3, col4 = st.columns(4)
-            col1.metric("📉 VaR Param.", f"{var_param:.4f}")
-            col2.metric("📉 VaR Monte Carlo", f"{var_mc:.4f}")
-            col3.metric("📉 CVaR", f"{cvar:.4f}")
-            col4.metric("📉 Max Drawdown", f"{max_dd:.4f}")
+            # 📊 Indicateurs Clés de Risque
+            st.subheader("📊 Indicateurs Clés de Risque")
+            for ticker in selected_assets:
+                col1, col2, col3, col4 = st.columns(4)
+                col1.metric(f"📉 {ticker} - VaR Param.", f"{var_param[ticker]:.4f}")
+                col2.metric(f"📉 {ticker} - VaR Monte Carlo", f"{var_mc:.4f}")
+                col3.metric(f"📉 {ticker} - CVaR", f"{cvar:.4f}")
+                col4.metric(f"📉 {ticker} - Max Drawdown", f"{max_dd:.4f}")
 
             # 📊 Visualisation du Drawdown
             st.subheader("📉 Évolution du Drawdown")
