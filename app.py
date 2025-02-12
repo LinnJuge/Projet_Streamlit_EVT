@@ -25,7 +25,7 @@ if len(selected_tickers) > 1:
         weights = np.array(weights) / np.sum(weights)
 
 if selected_tickers:
-    prices_data, returns_data = dl.get_data(selected_tickers, start_date, end_date)
+    prices_data, returns_data = get_data(selected_tickers, start_date, end_date)
 
     if len(selected_tickers) > 1:
         if allocation_method == "Équipondérée":
