@@ -1,5 +1,5 @@
 import streamlit as st
-import data_loader as dl
+from data_loader import get_data, TICKERS_LIST
 import risk_indicators as ri
 import portfolio_optimizer as po
 import pandas as pd
@@ -8,7 +8,7 @@ import numpy as np
 st.title("📊 Dashboard de Gestion du Risque & EVT")
 
 # 📌 Sélection des actifs
-tickers = dl.TICKERS_LIST
+tickers = TICKERS_LIST
 selected_tickers = st.sidebar.multiselect("Sélectionnez les actifs", tickers, default=["SPY"])
 start_date = st.sidebar.date_input("Date de début", value=pd.to_datetime("2023-01-01"))
 end_date = st.sidebar.date_input("Date de fin", value=pd.to_datetime("2024-01-01"))
