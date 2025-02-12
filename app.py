@@ -54,7 +54,12 @@ if selected_tickers:
             var_mc = ri.monte_carlo_var(returns_data, confidence_level)
             cvar = ri.calculate_cvar(returns_data, confidence_level)
             drawdown = ri.calculate_drawdown(prices_data)
-            max_dd = ri.max_drawdown(prices_data)
+            max_dd = ri.max_drawdown(prices_data) 
+            # Extraction en float
+            var_param = float(var_param) if isinstance(var_param, (pd.Series, np.ndarray)) else var_param
+            var_mc = float(var_mc) if isinstance(var_mc, (pd.Series, np.ndarray)) else var_mc
+            cvar = float(cvar) if isinstance(cvar, (pd.Series, np.ndarray)) else cvar
+            max_dd = float(max_dd) if isinstance(max_dd, (pd.Series, np.ndarray)) else max_dd
 
         
           
