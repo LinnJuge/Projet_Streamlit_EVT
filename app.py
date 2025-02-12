@@ -37,11 +37,11 @@ if selected_tickers:
         fig, ax = plt.subplots(figsize=(12,5))
         for ticker in returns_data.columns:
             sns.lineplot(x=returns_data.index, y=returns_data[ticker], label=ticker)
-            plt.xlabel("Date")
-            plt.ylabel("Rendements")
-            plt.title("Évolution des Rendements des Actifs")
-            plt.legend()
-            st.pyplot(fig)
+        plt.xlabel("Date")
+        plt.ylabel("Rendements")
+        plt.title("Évolution des Rendements des Actifs")
+        plt.legend()
+        st.pyplot(fig)
 
         # 📌 Onglets du Dashboard
         tab1, tab2, tab3, tab4 = st.tabs(["📊 Indicateurs de Risque", "📈 EVT", "📉 Stress Testing", "📌 Visualisations"])
@@ -50,11 +50,6 @@ if selected_tickers:
         with tab1:
             st.subheader("📊 Indicateurs de Risque")
 
-            col1, col2, col3, col4 = st.columns(4)
-            col1.metric("📉 VaR Param.", f"{var_param:.4f}")
-            col2.metric("📉 VaR Monte Carlo", f"{var_mc:.4f}")
-            col3.metric("📉 CVaR", f"{cvar:.4f}")
-            col4.metric("📉 Max Drawdown", f"{max_dd:.4f}")
 
             # 📌 Calcul des indicateurs
             var_param = ri.calculate_var(returns_data, confidence_level)
@@ -62,6 +57,17 @@ if selected_tickers:
             cvar = ri.calculate_cvar(returns_data, confidence_level)
             drawdown = ri.calculate_drawdown(prices_data)
             max_dd = ri.max_drawdown(prices_data)
+
+            # 🔹 Conversion des valeurs si nécessaire
+            var_param = float(var_param) if isinstance(var_param, (pd.Series, pd.DataFrame)) else var_param
+            cvar = float(cvar) if isinstance(cvar, (pd.Series, pd.DataFrame)) else cvar
+            max_dd = float(max_dd) if isinstance(max_dd, (pd.Series, pd.DataFrame)) else max_dd
+
+            col1, col2, col3, col4 = st.columns(4)
+            col1.metric("📉 VaR Param.", f"{var_param:.4f}")
+            col2.metric("📉 VaR Monte Carlo", f"{var_mc:.4f}")
+            col3.metric("📉 CVaR", f"{cvar:.4f}")
+            col4.metric("📉 Max Drawdown", f"{max_dd:.4f}")
 
             # 📌 Affichage des résultats
             st.write(f"📌 **VaR Paramétrique ({confidence_level*100}%)** : ", var_param)
