@@ -57,11 +57,7 @@ if selected_tickers:
             max_dd = ri.max_drawdown(prices_data)
 
         
-            # ✅ Conversion correcte
-            var_param = extract_float(var_param)
-            var_mc = extract_float(var_mc)
-            cvar = extract_float(cvar)
-            max_dd = extract_float(max_dd)
+          
 
             # 📊 Indicateurs Clés de Risque (Affichage sous forme de KPI Cards)
             col1, col2, col3, col4 = st.columns(4)
