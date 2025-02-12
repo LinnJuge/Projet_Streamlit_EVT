@@ -36,7 +36,7 @@ if selected_tickers:
         st.subheader("📈 Évolution des Rendements")
         fig, ax = plt.subplots(figsize=(12,5))
         for ticker in returns_data.columns:
-            ns.lineplot(x=returns_data.index, y=returns_data[ticker], label=ticker)
+            sns.lineplot(x=returns_data.index, y=returns_data[ticker], label=ticker)
             plt.xlabel("Date")
             plt.ylabel("Rendements")
             plt.title("Évolution des Rendements des Actifs")
