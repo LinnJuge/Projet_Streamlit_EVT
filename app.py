@@ -65,7 +65,7 @@ if selected_tickers:
                 col1, col2, col3, col4 = st.columns(4)
                 col1.metric(f"📉 {ticker} - VaR Param.", f"{var_param[ticker]:.4f}")
                 col2.metric(f"📉 {ticker} - VaR Monte Carlo", f"{var_mc:.4f}")
-                col3.metric(f"📉 {ticker} - CVaR", f"{cvar:.4f}")
+                col3.metric(f"📉 {ticker} - CVaR", f"{cvar[ticker]:.4f}")
                 col4.metric(f"📉 {ticker} - Max Drawdown", f"{max_dd:.4f}")
 
             # 📊 Visualisation du Drawdown
