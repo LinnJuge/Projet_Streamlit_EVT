@@ -3,15 +3,19 @@ import scipy.stats as stats
 import pandas as pd
 
 def calculate_var(data, confidence=0.95):
-    """
-    Calcule la Value at Risk (VaR) paramétrique
-    :param data: DataFrame des rendements
-    :param confidence: Niveau de confiance (ex: 0.95 pour 95%)
-    :return: VaR pour chaque actif
-    """
     mean_returns = data.mean()
     std_dev = data.std()
+
+    # Vérification si l'écart-type est 0
+    if std_dev.isnull().any() or (std_dev == 0).any():
+        return np.nan
+
     var = stats.norm.ppf(1 - confidence, mean_returns, std_dev)
+
+    # Si c'est une Série, on retourne la première valeur
+    if isinstance(var, pd.Series):
+        return var.iloc[0]  
+
     return var
 
 def monte_carlo_var(data, confidence=0.95, simulations=10000):
