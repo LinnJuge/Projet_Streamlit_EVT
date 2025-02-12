@@ -19,4 +19,4 @@ def get_data(tickers, start, end):
     if returns.empty:
         print("⚠️ Les rendements sont vides après calcul, vérifie les données.")
     
-    return df, returns  # Retourne prix ajustés et rendements
+    return df, returns  # ✅ Renvoie PRIX + RENDEMENTS
