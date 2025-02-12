@@ -12,7 +12,7 @@ TICKERS_LIST = [
 ]
 
 def get_data(tickers, start, end):
-    df = yf.download(tickers, start=start, end=end)["Adj Close"]
+    df = yf.download(tickers, start=start, end=end)["Close"]
 
     if df.empty:
         print("⚠️ Aucune donnée récupérée, vérifie tes dates et tickers !")
