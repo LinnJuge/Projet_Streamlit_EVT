@@ -51,10 +51,10 @@ if selected_tickers:
             st.subheader("📊 Indicateurs de Risque")
 
             col1, col2, col3, col4 = st.columns(4)
-            col1.metric("📉 VaR Param.", f"{var_param.min():.4f}")
+            col1.metric("📉 VaR Param.", f"{var_param:.4f}")
             col2.metric("📉 VaR Monte Carlo", f"{var_mc:.4f}")
-            col3.metric("📉 CVaR", f"{cvar.min():.4f}")
-            col4.metric("📉 Max Drawdown", f"{max_dd.min():.4f}")
+            col3.metric("📉 CVaR", f"{cvar:.4f}")
+            col4.metric("📉 Max Drawdown", f"{max_dd:.4f}")
 
             # 📌 Calcul des indicateurs
             var_param = ri.calculate_var(returns_data, confidence_level)
