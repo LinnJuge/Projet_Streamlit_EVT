@@ -49,25 +49,34 @@ if selected_tickers:
         # 🟢 Onglet 1 : Indicateurs de Risque
         with tab1:
             st.subheader("📊 Indicateurs de Risque")
-
-
             # 📌 Calcul des indicateurs
-            var_param = ri.calculate_var(returns_data, confidence_level)
-            var_mc = ri.monte_carlo_var(returns_data, confidence_level)
-            cvar = ri.calculate_cvar(returns_data, confidence_level)
-            drawdown = ri.calculate_drawdown(prices_data)
-            max_dd = ri.max_drawdown(prices_data)
+var_param = ri.calculate_var(returns_data, confidence_level)
+var_mc = ri.monte_carlo_var(returns_data, confidence_level)
+cvar = ri.calculate_cvar(returns_data, confidence_level)
+drawdown = ri.calculate_drawdown(prices_data)
+max_dd = ri.max_drawdown(prices_data)
 
-            # 🔹 Conversion des valeurs si nécessaire
-            var_param = float(var_param) if isinstance(var_param, (pd.Series, pd.DataFrame)) else var_param
-            cvar = float(cvar) if isinstance(cvar, (pd.Series, pd.DataFrame)) else cvar
-            max_dd = float(max_dd) if isinstance(max_dd, (pd.Series, pd.DataFrame)) else max_dd
+# 🔹 Conversion en float (gérer Series et NaN)
+def extract_float(value):
+    if isinstance(value, pd.Series):
+        return float(value.iloc[0]) if not value.isnull().all() else np.nan
+    elif isinstance(value, (pd.DataFrame, list)):
+        return np.nan  # Gérer les cas d'erreur
+    return float(value)
 
-            col1, col2, col3, col4 = st.columns(4)
-            col1.metric("📉 VaR Param.", f"{var_param:.4f}")
-            col2.metric("📉 VaR Monte Carlo", f"{var_mc:.4f}")
-            col3.metric("📉 CVaR", f"{cvar:.4f}")
-            col4.metric("📉 Max Drawdown", f"{max_dd:.4f}")
+var_param = extract_float(var_param)
+var_mc = extract_float(var_mc)
+cvar = extract_float(cvar)
+max_dd = extract_float(max_dd)
+
+# 📊 Indicateurs Clés de Risque (Affichage après conversion)
+col1, col2, col3, col4 = st.columns(4)
+col1.metric("📉 VaR Param.", f"{var_param:.4f}")
+col2.metric("📉 VaR Monte Carlo", f"{var_mc:.4f}")
+col3.metric("📉 CVaR", f"{cvar:.4f}")
+col4.metric("📉 Max Drawdown", f"{max_dd:.4f}")
+
+            
 
             # 📌 Affichage des résultats
             st.write(f"📌 **VaR Paramétrique ({confidence_level*100}%)** : ", var_param)
