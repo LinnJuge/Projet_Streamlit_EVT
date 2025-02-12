@@ -2,19 +2,22 @@ import yfinance as yf
 import pandas as pd
 
 def get_data(tickers, start, end):
-    """
-    Télécharge les données boursières de Yahoo Finance et calcule les rendements logarithmiques.
-    :param tickers: Liste des tickers (actions)
-    :param start: Date de début (format YYYY-MM-DD)
-    :param end: Date de fin (format YYYY-MM-DD)
-    :return: DataFrame avec les rendements logarithmiques
-    """
     df = yf.download(tickers, start=start, end=end)["Close"]
 
-    # Vérification que toutes les actions ont bien des données
-    df.dropna(inplace=True)
+    if df.empty:
+        print("⚠️ Aucune donnée récupérée, vérifie tes dates et tickers !")
+        return pd.DataFrame()  # Retourne un DataFrame vide
+
+    df.replace([np.inf, -np.inf], np.nan, inplace=True)  # Remplace les infinis par NaN
+    df.dropna(inplace=True)  # Supprime les valeurs NaN
+
+    # 📌 Vérification et suppression des zéros pour éviter les infinis
+    df = df[df > 0]
 
     # Calcul des rendements logarithmiques
     returns = df.pct_change().dropna()
 
+    if returns.empty:
+        print("⚠️ Les rendements sont vides après calcul, vérifie les données.")
+    
     return returns
