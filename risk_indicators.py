@@ -3,20 +3,24 @@ import scipy.stats as stats
 import pandas as pd
 
 def calculate_var(data, confidence=0.95):
-    mean_returns = data.mean()
-    std_dev = data.std()
+    """
+    Calcule la Value at Risk (VaR) paramétrique pour chaque actif.
+    Si plusieurs actifs sont sélectionnés, retourne un dictionnaire avec les valeurs.
+    """
+    var_results = {}
 
-    # Vérification si l'écart-type est 0
-    if std_dev.isnull().any() or (std_dev == 0).any():
-        return np.nan
+    # Calculer VaR pour chaque colonne (chaque actif sélectionné)
+    for ticker in data.columns:
+        mean_return = data[ticker].mean()
+        std_dev = data[ticker].std()
 
-    var = stats.norm.ppf(1 - confidence, mean_returns, std_dev)
+        # Vérification : éviter les erreurs si std_dev est 0
+        if pd.isnull(std_dev) or std_dev == 0:
+            var_results[ticker] = np.nan
+        else:
+            var_results[ticker] = float(stats.norm.ppf(1 - confidence, mean_return, std_dev))
 
-    # Si c'est une Série, on retourne la première valeur
-    if isinstance(var, pd.Series):
-        return var.iloc[0]  
-
-    return var
+    return var_results  # Retourne un dictionnaire {ticker: var_value}
 
 def monte_carlo_var(data, confidence=0.95, simulations=10000):
     """
