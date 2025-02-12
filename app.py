@@ -56,12 +56,7 @@ if selected_tickers:
             drawdown = ri.calculate_drawdown(prices_data)
             max_dd = ri.max_drawdown(prices_data)
 
-            # 🔹 Fonction pour convertir en float
-            def extract_float(value):
-                if isinstance(value, pd.Series):
-                    return float(value.iloc[0]) if not value.isnull().all() else np.nan
-                return float(value) if isinstance(value, (int, float, np.number)) else np.nan
-
+        
             # ✅ Conversion correcte
             var_param = extract_float(var_param)
             var_mc = extract_float(var_mc)
