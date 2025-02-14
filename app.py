@@ -90,13 +90,13 @@ if tickers:
         sns.histplot(portfolio_returns, bins=50, kde=True, ax=ax, color="blue")
         
         if show_var_param:
-            ax.axvline(-calculate_var(portfolio_returns, confidence, weights), color='purple', linestyle='--', label='VaR Paramétrique')
+            ax.axvline(-calculate_var(portfolio_returns, confidence), color='purple', linestyle='--', label='VaR Paramétrique')
         if show_var_hist:
-            ax.axvline(-var_historique(portfolio_returns, confidence, weights), color='red', linestyle='--', label='VaR Historique')
+            ax.axvline(-var_historique(portfolio_returns, confidence), color='red', linestyle='--', label='VaR Historique')
         if show_var_mc:
-            ax.axvline(-var_monte_carlo(portfolio_returns, confidence, weights=weights), color='green', linestyle='--', label='VaR Monte Carlo')
+            ax.axvline(-var_monte_carlo(portfolio_returns, confidence), color='green', linestyle='--', label='VaR Monte Carlo')
         
-        ax.axvline(-calculate_cvar(portfolio_returns, confidence, weights), color='black', linestyle='-', linewidth=2, label='CVaR')
+        ax.axvline(-calculate_cvar(portfolio_returns, confidence), color='black', linestyle='-', linewidth=2, label='CVaR')
         ax.legend()
         st.pyplot(fig)
     
