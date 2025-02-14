@@ -5,18 +5,26 @@ import scipy.stats as stats
 def get_portfolio_returns(returns, weights=None):
     """
     Calcule les rendements d'un portefeuille pondéré.
-    - Retourne un DataFrame ou une Series bien formatée.
+    - Retourne une **Series** si un seul actif, sinon un **DataFrame** bien formaté.
+    - Gère le cas où `weights` est fourni pour un seul actif.
     """
-    if weights is not None:
-        weights = np.array(weights).reshape(-1)
+    if returns is None or returns.empty:
+        return None  # Si aucun retour n'est dispo, retour `None` pour éviter les erreurs
 
-        # Vérifier si returns est un DataFrame
+    if weights is not None:
+        weights = np.array(weights).reshape(-1)  # Assurer un tableau 1D
+
+        # Cas normal : Plusieurs actifs → DataFrame
         if isinstance(returns, pd.DataFrame):
             if len(weights) != returns.shape[1]:
                 raise ValueError(f"🚨 Erreur : Nombre d'actifs ({returns.shape[1]}) ≠ Nombre de poids ({len(weights)})")
             return returns.dot(weights)  # Appliquer les poids
-    
-    return returns.squeeze()  # Assurer qu'on retourne une Series si un seul actif
+
+        # Cas particulier : Un seul actif → Convertir en DataFrame avant dot()
+        elif isinstance(returns, pd.Series):
+            return returns.to_frame().dot(weights)[0]  # Convertir en DataFrame puis extraire le scalair
+
+    return returns  # Si pas de pondération, retourner directement les rendements
 
 
 def var_historique(data, confidence=0.95, weights=None):
