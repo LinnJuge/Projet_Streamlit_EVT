@@ -5,160 +5,130 @@ import scipy.stats as stats
 def get_portfolio_returns(returns, weights=None):
     """
     Calcule les rendements d'un portefeuille pondéré.
+    - Retourne un DataFrame ou une Series bien formatée.
     """
     if weights is not None:
         weights = np.array(weights).reshape(-1)
 
-        # 🛠 Vérification si weights correspond bien au nombre d'actifs
+        # Vérifier si returns est un DataFrame
         if isinstance(returns, pd.DataFrame):
             if len(weights) != returns.shape[1]:
                 raise ValueError(f"🚨 Erreur : Nombre d'actifs ({returns.shape[1]}) ≠ Nombre de poids ({len(weights)})")
-            return returns.dot(weights)
+            return returns.dot(weights)  # Appliquer les poids
+    
+    return returns.squeeze()  # Assurer qu'on retourne une Series si un seul actif
 
-    return returns  # ✅ Retourne les rendements bruts si pas de poids
 
 def var_historique(data, confidence=0.95, weights=None):
-    """
-    Calcule la VaR Historique pour chaque actif ou un portefeuille.
-    - Trie explicitement les rendements avant d'extraire le quantile.
-    """
-    data = get_portfolio_returns(data, weights)
+    """Calcule la VaR Historique"""
+    data = get_portfolio_returns(data, weights).dropna()
 
-    if isinstance(data, pd.Series):
-        sorted_returns = np.sort(data.dropna())  # ✅ Tri explicite des rendements
-        return abs(np.percentile(sorted_returns, (1 - confidence) * 100))
+    if data.empty:  # Vérifier si les rendements sont vides
+        return 0.0
 
-    return {ticker: abs(np.percentile(np.sort(data[ticker].dropna()), (1 - confidence) * 100)) for ticker in data.columns}
+    return abs(np.percentile(data, (1 - confidence) * 100))
+
 
 def calculate_var(data, confidence=0.95, weights=None):
-    """
-    VaR paramétrique pour chaque actif ou un portefeuille.
-    """
-    if weights is not None:
-        data = (data * weights).sum(axis=1)
+    """Calcule la VaR Paramétrique"""
+    data = get_portfolio_returns(data, weights).dropna()
+    
+    if data.empty:  # Vérification si les rendements sont vides
+        return 0.0
+    
+    mean, std = data.mean(), data.std()
+    
+    if std == 0:  # Gérer le cas où la volatilité est nulle
+        return abs(mean)  # Dans ce cas, on retourne la moyenne absolue
 
-    if isinstance(data, pd.Series):
-        return abs(float(stats.norm.ppf(1 - confidence, data.mean(), data.std())))
+    return abs(float(stats.norm.ppf(1 - confidence, mean, std)))
 
-    return {ticker: abs(float(stats.norm.ppf(1 - confidence, data[ticker].mean(), data[ticker].std())))
-            for ticker in data.columns}
+
 
 def var_monte_carlo(data, confidence=0.95, simulations=10000, weights=None):
-    """
-    Calcule la VaR Monte Carlo pour chaque actif ou un portefeuille.
-    - Utilise un modèle de diffusion géométrique brownien pour simuler les prix futurs.
-    """
-    data = get_portfolio_returns(data, weights)
+    """Calcule la VaR Monte Carlo"""
+    data = get_portfolio_returns(data, weights).dropna()
 
-    # Calcul des paramètres estimés
-    mu = data.mean()  # Moyenne des rendements
-    sigma = data.std()  # Volatilité des rendements
-    P0 = 1  # On normalise le prix initial à 1 pour simplifier
+    if data.empty:
+        return 0.0  # Retourner 0 si aucun rendement disponible
 
-    if isinstance(data, pd.Series):  # Cas d'un seul actif
-        Z = np.random.normal(0, 1, simulations)  # Variables normales centrées réduites
-        P_t1 = P0 * np.exp((mu - 0.5 * sigma**2) + sigma * Z)  # Simulation des prix futurs
-        returns_mc = np.log(P_t1 / P0)  # Calcul des rendements simulés
-        returns_mc.sort()
-        return abs(np.percentile(returns_mc, (1 - confidence) * 100))  # Extraction de la VaR Monte Carlo
+    mu, sigma = data.mean(), data.std()
 
-    # Cas où plusieurs actifs sont analysés individuellement
-    var_results = {}
-    for ticker in data.columns:
-        Z = np.random.normal(0, 1, simulations)
-        P_t1 = P0 * np.exp((mu[ticker] - 0.5 * sigma[ticker]**2) + sigma[ticker] * Z)
-        returns_mc = np.log(P_t1 / P0)
-        returns_mc.sort()
-        var_results[ticker] = abs(np.percentile(returns_mc, (1 - confidence) * 100))
+    if sigma == 0:  # Gérer le cas où la volatilité est nulle
+        return abs(mu)  # Retourner la moyenne absolue
 
-    return var_results
+    simulated_returns = np.random.normal(mu, sigma, simulations)
+    return abs(np.percentile(simulated_returns, (1 - confidence) * 100))
 
 def calculate_cvar(data, confidence=0.95, weights=None):
-    """
-    Calcule le Conditional Value at Risk (CVaR ou Expected Shortfall) pour chaque actif ou un portefeuille.
-    - data : dataframe des rendements
-    - confidence : niveau de confiance (ex: 0.95 pour un CVaR à 95%)
-    - weights : vecteur de poids pour un portefeuille
-    """
-    data = get_portfolio_returns(data, weights)  # ✅ Assure que data est bien pondéré
+    """Calcule le Conditional VaR (CVaR)"""
+    data = get_portfolio_returns(data, weights).dropna()
 
-    # Vérifier que `calculate_var()` est bien définie
-    if "calculate_var" not in globals():
-        raise NameError("⚠️ La fonction calculate_var() n'est pas définie !")
+    if data.empty:
+        return 0.0  # Si pas de rendements valides, retour 0
 
-    # Calcul de la VaR
     var = calculate_var(data, confidence)
 
-    # 🔹 Correction pour éviter TypeError : appliquer - uniquement sur les valeurs numériques
-    var = -var if isinstance(var, (int, float)) else {ticker: -value for ticker, value in var.items()}
+    losses = data[data <= -var]  # Sélectionner uniquement les pertes extrêmes
 
-    if isinstance(data, pd.Series):  # ✅ Cas d'un portefeuille ou d'un actif unique
-        return abs(data[data <= var].mean())  # ✅ Moyenne des pertes sous la VaR
+    if losses.empty:  # Si aucune perte sous la VaR, retour 0
+        return 0.0
 
-    # ✅ Cas de plusieurs actifs (individuellement)
-    return {ticker: abs(data[ticker][data[ticker] <= var[ticker]].mean()) for ticker in data.columns}
+    return abs(losses.mean())  # Moyenne des pertes sous la VaR
+
 
 # 📌 Fonction pour la semi-déviation (volatilité des pertes uniquement)
 def semi_deviation(data, weights=None):
     """
-    Calcule la semi-déviation (volatilité des pertes) pour chaque actif ou un portefeuille.
+    Calcule la semi-déviation (volatilité des pertes) pour un actif ou un portefeuille.
     """
     data = get_portfolio_returns(data, weights)
-    negative_returns = data[data < 0]  # On ne garde que les rendements négatifs
+    negative_returns = data[data < 0]  # Sélection des rendements négatifs
 
-    if isinstance(data, pd.Series):
-        return negative_returns.std()
+    if isinstance(data, pd.Series):  # Portefeuille ou actif unique
+        return negative_returns.std() if not negative_returns.empty else 0.0
+
+    return {ticker: negative_returns[ticker].std() if not negative_returns[ticker].dropna().empty else 0.0
+            for ticker in data.columns}
+
 
     return {ticker: negative_returns[ticker].std() for ticker in data.columns}
 
 # 📌 Fonction pour la volatilité annualisée
 def annual_volatility(data, trading_days=252, weights=None):
     """
-    Calcule la volatilité annualisée pour chaque actif ou un portefeuille.
+    Calcule la volatilité annualisée pour un actif ou un portefeuille.
     """
     data = get_portfolio_returns(data, weights)
+    vol = data.std() * np.sqrt(trading_days)  # Multiplication par √252 pour annualiser
 
-    if isinstance(data, pd.Series):
-        return data.std() * np.sqrt(trading_days)
+    if isinstance(data, pd.Series):  # Portefeuille ou actif unique
+        return vol
 
-    return {ticker: data[ticker].std() * np.sqrt(trading_days) for ticker in data.columns}
+    return {ticker: vol[ticker] for ticker in data.columns}  # Renvoie un dict pour plusieurs actifs
 
 # 📌 Fonction pour la volatilité EWMA
 def ewma_volatility(data, lambda_=0.94, weights=None):
     """
-    Calcule la volatilité EWMA pour chaque actif ou un portefeuille.
+    Calcule la volatilité EWMA (Exponentially Weighted Moving Average).
     """
     data = get_portfolio_returns(data, weights)
-
-    if isinstance(data, pd.Series):
+    
+    # Vérification si un seul actif ou plusieurs actifs
+    if isinstance(data, pd.Series):  
         squared_returns = data ** 2
-        ewma_vol = [squared_returns.iloc[0]]  # Initialisation
-
-        for r2 in squared_returns[1:]:
-            ewma_vol.append(lambda_ * ewma_vol[-1] + (1 - lambda_) * r2)
-
-        return np.sqrt(ewma_vol[-1])  # Dernière valeur = volatilité EWMA actuelle
-
-    return {ticker: ewma_volatility(data[ticker]) for ticker in data.columns}
+        weights_vector = (1 - lambda_) * lambda_ ** np.arange(len(squared_returns))[::-1]
+        ewma_vol = np.sqrt(np.sum(weights_vector * squared_returns) / np.sum(weights_vector))
+        return ewma_vol
+    
+    return {ticker: ewma_volatility(data[ticker], lambda_) for ticker in data.columns}  # Cas multi-actifs
 
 def calculate_drawdown(prices, weights=None):
-    """
-    Calcule le drawdown pour un actif ou un portefeuille.
-    """
-    if weights is not None:
-        if isinstance(prices, pd.DataFrame):
-            prices = prices.dot(weights)  # ✅ Appliquer correctement les poids
-        elif isinstance(prices, pd.Series):
-            prices = prices  # ✅ Ne pas modifier si c'est déjà une série
-
+    """Calcule le Drawdown"""
+    prices = get_portfolio_returns(prices, weights)
     peak = prices.cummax()
-    drawdown = (prices - peak) / peak
-    return drawdown
-
+    return (prices - peak) / peak
 
 def max_drawdown(prices, weights=None):
-    """
-    Calcule le maximum drawdown pour un actif ou un portefeuille.
-    """
-    drawdowns = calculate_drawdown(prices, weights)
-    return drawdowns.min()
+    """Calcule le Max Drawdown"""
+    return calculate_drawdown(prices, weights).min()
