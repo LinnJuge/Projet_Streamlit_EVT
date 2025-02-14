@@ -1,22 +1,26 @@
 import numpy as np
-import pandas as pd
 from scipy.optimize import minimize
 
-def equal_weight_allocation(n_assets):
-    """ Retourne une allocation équipondérée. """
-    return np.ones(n_assets) / n_assets
+def equal_weighted_portfolio(returns):
+    """
+    Calcule un portefeuille équipondéré.
+    """
+    n = len(returns.columns)
+    return np.ones(n) / n  
 
-def min_variance_allocation(returns):
-    """ Retourne l'allocation qui minimise la variance du portefeuille. """
+def min_variance_portfolio(returns):
+    """
+    Optimisation d'un portefeuille à variance minimale.
+    """
+    n = len(returns.columns)
+    initial_guess = np.ones(n) / n  
     cov_matrix = returns.cov()
 
     def portfolio_volatility(weights):
-        return np.sqrt(weights.T @ cov_matrix @ weights)
+        return np.sqrt(np.dot(weights.T, np.dot(cov_matrix, weights)))
 
-    n_assets = len(returns.columns)
-    init_guess = np.ones(n_assets) / n_assets
-    bounds = [(0, 1) for _ in range(n_assets)]
-    constraints = {"type": "eq", "fun": lambda w: np.sum(w) - 1}
+    constraints = ({'type': 'eq', 'fun': lambda w: np.sum(w) - 1})
+    bounds = tuple((0.05, 0.95) for _ in range(n))
 
-    result = minimize(portfolio_volatility, init_guess, bounds=bounds, constraints=constraints)
-    return result.x if result.success else equal_weight_allocation(n_assets)
+    result = minimize(portfolio_volatility, initial_guess, constraints=constraints, bounds=bounds)
+    return result.x if result.success else initial_guess 
