@@ -143,22 +143,24 @@ def ewma_volatility(data, lambda_=0.94, weights=None):
 
     return {ticker: ewma_volatility(data[ticker]) for ticker in data.columns}
 
-
 def calculate_drawdown(prices, weights=None):
     """
-    Drawdown pour chaque actif ou un portefeuille.
+    Calcule le drawdown pour un actif ou un portefeuille.
     """
-    if weights is not None and isinstance(prices, pd.DataFrame):
-        prices = prices.dot(weights)  # ✅ Applique correctement les poids
+    if weights is not None:
+        if isinstance(prices, pd.DataFrame):
+            prices = prices.dot(weights)  # ✅ Appliquer correctement les poids
+        elif isinstance(prices, pd.Series):
+            prices = prices  # ✅ Ne pas modifier si c'est déjà une série
 
     peak = prices.cummax()
     drawdown = (prices - peak) / peak
-
     return drawdown
-    
+
+
 def max_drawdown(prices, weights=None):
     """
-    Max Drawdown pour chaque actif ou un portefeuille.
+    Calcule le maximum drawdown pour un actif ou un portefeuille.
     """
-    drawdowns = calculate_drawdown(prices, weights if mode == "Portefeuille" else None)
-    return drawdown.min()
+    drawdowns = calculate_drawdown(prices, weights)
+    return drawdowns.min()
