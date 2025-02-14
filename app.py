@@ -196,7 +196,6 @@ def semi_deviation(data, weights=None):
 
 # 📌 Fonction pour la volatilité annualisée
 def annual_volatility(data, trading_days=252, weights=None):
-def annual_volatility(data, trading_days=252, weights=None):
     """
     Calcule la volatilité annualisée pour un actif ou un portefeuille.
     """
