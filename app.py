@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import yfinance as yf
 import matplotlib.pyplot as plt
+from data_loader import get_data
 import seaborn as sns
 from risk_indicators import *  # Import des fonctions de risk_indicators.py
 from portfolio_allocation import *  # Import des fonctions de portfolio_optimization.py
