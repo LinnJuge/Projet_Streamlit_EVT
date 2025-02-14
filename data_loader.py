@@ -2,14 +2,6 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 
-# 📌 Liste élargie d'actifs disponibles
-TICKERS_LIST = [
-    "SPY", "AAPL", "MSFT", "GOOGL", "TSLA", "AMZN", "NVDA", "META", "NFLX", "BRK-B",
-    "JPM", "V", "PG", "JNJ", "UNH", "DIS", "KO", "PEP", "PFE", "XOM", 
-    "IBM", "CSCO", "BA", "MCD", "GS", "CAT", "CVX", "T", "INTC", "WMT",
-    "QQQ", "DIA", "IWM", "XLF", "XLK", "XLE", "XLV", "XLY", "XLP", "XLU",
-    "GLD", "SLV", "BTC-USD", "ETH-USD", "EURUSD=X", "GBPUSD=X", "JPYUSD=X"
-]
 
 
 def get_data(tickers, start, end):
