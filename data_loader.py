@@ -11,21 +11,17 @@ TICKERS_LIST = [
     "GLD", "SLV", "BTC-USD", "ETH-USD", "EURUSD=X", "GBPUSD=X", "JPYUSD=X"
 ]
 
+
 def get_data(tickers, start, end):
-    df = yf.download(tickers, start=start, end=end)["Close"]
-
-    if df.empty:
-        print("⚠️ Aucune donnée récupérée, vérifie tes dates et tickers !")
-        return pd.DataFrame(), pd.DataFrame()
-
-    df.replace([np.inf, -np.inf], np.nan, inplace=True)
-    df.dropna(inplace=True)
-    df = df[df > 0]
-
-    # Calcul des rendements logarithmiques
-    returns = np.log(df / df.shift(1)).dropna()
-
-    if returns.empty:
-        print("⚠️ Les rendements sont vides après calcul, vérifie les données.")
+    """
+    Récupère les prix de clôture des actifs sélectionnés depuis Yahoo Finance.
     
+    :param tickers: Liste des tickers des actifs
+    :param start: Date de début
+    :param end: Date de fin
+    :return: DataFrame des prix de clôture et DataFrame des rendements log
+    """
+    df = yf.download(tickers, start=start, end=end)["Close"]  # 🔹 Prix de clôture
+    df.dropna(inplace=True)  # 🔹 Supprimer les valeurs manquantes
+    returns = np.log(df / df.shift(1)).dropna()  # 🔹 Calcul des rendements log
     return df, returns
