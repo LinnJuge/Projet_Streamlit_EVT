@@ -59,9 +59,9 @@ if tickers:
         portfolio_returns = get_portfolio_returns(returns, weights)
     else:
         portfolio_returns = returns
-st.write("DEBUG - Type de portfolio_returns:", type(portfolio_returns))
-st.write("DEBUG - Shape de portfolio_returns:", portfolio_returns.shape if isinstance(portfolio_returns, pd.DataFrame) else "Non-DataFrame")
-st.write("DEBUG - Weights utilisés:", weights)
+        st.write("DEBUG - Type de portfolio_returns:", type(portfolio_returns))
+        st.write("DEBUG - Shape de portfolio_returns:", portfolio_returns.shape if isinstance(portfolio_returns, pd.DataFrame) else "Non-DataFrame")
+        st.write("DEBUG - Weights utilisés:", weights)
     
     # Tabs pour afficher les différentes sections
     tab1, tab2, tab3, tab4 = st.tabs(["📉 Indicateurs de Risque", "📊 Volatilité", "📈 Rendements & VaR", "📉 Drawdowns"])
