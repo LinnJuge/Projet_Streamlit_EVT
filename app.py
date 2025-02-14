@@ -3,11 +3,6 @@ import pandas as pd
 import numpy as np
 import yfinance as yf
 import matplotlib.pyplot as plt
-
-import importlib
-import risk_indicators
-importlib.reload(risk_indicators)
-
 from data_loader import get_data
 import seaborn as sns
 from risk_indicators import get_portfolio_returns, var_historique, var_monte_carlo, calculate_var, calculate_cvar, semi_deviation, annual_volatility, ewma_volatility, calculate_drawdown, max_drawdown  # Import des fonctions de risk_indicators.py
@@ -64,6 +59,9 @@ if tickers:
         portfolio_returns = get_portfolio_returns(returns, weights)
     else:
         portfolio_returns = returns
+st.write("DEBUG - Type de portfolio_returns:", type(portfolio_returns))
+st.write("DEBUG - Shape de portfolio_returns:", portfolio_returns.shape if isinstance(portfolio_returns, pd.DataFrame) else "Non-DataFrame")
+st.write("DEBUG - Weights utilisés:", weights)
     
     # Tabs pour afficher les différentes sections
     tab1, tab2, tab3, tab4 = st.tabs(["📉 Indicateurs de Risque", "📊 Volatilité", "📈 Rendements & VaR", "📉 Drawdowns"])
