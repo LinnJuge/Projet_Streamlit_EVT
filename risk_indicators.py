@@ -160,5 +160,5 @@ def max_drawdown(prices, weights=None):
     """
     Max Drawdown pour chaque actif ou un portefeuille.
     """
-    drawdown = calculate_drawdown(prices, weights)
+    drawdowns = calculate_drawdown(prices, weights if mode == "Portefeuille" else None)
     return drawdown.min()
