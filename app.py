@@ -76,9 +76,9 @@ if tickers:
     
     with tab2:
         st.subheader("Volatilité")
-        st.write("Volatilité Annualisée :", annual_volatility(portfolio_returns, weights=weights))
-        st.write("Volatilité EWMA :", ewma_volatility(portfolio_returns, weights=weights))
-        st.write("Semi-Deviation :", semi_deviation(portfolio_returns, weights=weights))
+        st.write("Volatilité Annualisée :", annual_volatility(portfolio_returns))
+        st.write("Volatilité EWMA :", ewma_volatility(portfolio_returns))
+        st.write("Semi-Deviation :", semi_deviation(portfolio_returns))
     
     with tab3:
         st.subheader("Visualisation des rendements et VaR")
