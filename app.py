@@ -3,6 +3,11 @@ import pandas as pd
 import numpy as np
 import yfinance as yf
 import matplotlib.pyplot as plt
+
+import importlib
+import risk_indicators
+importlib.reload(risk_indicators)
+
 from data_loader import get_data
 import seaborn as sns
 from risk_indicators import get_portfolio_returns, var_historique, var_monte_carlo, calculate_var, calculate_cvar, semi_deviation, annual_volatility, ewma_volatility, calculate_drawdown, max_drawdown  # Import des fonctions de risk_indicators.py
