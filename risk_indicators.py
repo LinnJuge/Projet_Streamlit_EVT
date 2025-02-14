@@ -8,12 +8,16 @@ def get_portfolio_returns(returns, weights=None):
     """
     if weights is not None:
         weights = np.array(weights).reshape(-1)  # ✅ S'assurer que weights est un tableau 1D
+        
+        # 🔍 Debug pour vérifier que la taille des poids correspond au nombre d'actifs
+        if isinstance(returns, pd.DataFrame) and weights.shape[0] != returns.shape[1]:
+            raise ValueError(f"🚨 Erreur : Nombre d'actifs ({returns.shape[1]}) ≠ Nombre de poids ({weights.shape[0]})")
+        
         if isinstance(returns, pd.DataFrame):  # ✅ Cas normal : plusieurs actifs
             return returns.dot(weights)
         elif isinstance(returns, pd.Series):  # ✅ Cas spécial : un seul actif ou portefeuille déjà pondéré
             return returns  # ✅ Ne pas appliquer weights une seconde fois
     return returns  # ✅ Retourne directement si pas de weights
-
 
 def var_historique(data, confidence=0.95, weights=None):
     """
