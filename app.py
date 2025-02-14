@@ -71,9 +71,9 @@ if tickers:
     with tab1:
         st.subheader("Indicateurs de Risque")
         st.write("### VaR")
-        st.write("VaR Historique :", var_historique(portfolio_returns, confidence, weights))
-        st.write("VaR Paramétrique :", calculate_var(portfolio_returns, confidence, weights))
-        st.write("VaR Monte Carlo :", var_monte_carlo(portfolio_returns, confidence, weights))
+        st.write("VaR Historique :", var_historique(portfolio_returns, confidence))
+        st.write("VaR Paramétrique :", calculate_var(portfolio_returns, confidence))
+        st.write("VaR Monte Carlo :", var_monte_carlo(portfolio_returns, confidence))
         
         st.write("### CVaR")
         st.write("CVaR :", calculate_cvar(portfolio_returns, confidence, weights))
