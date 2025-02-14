@@ -148,14 +148,14 @@ def calculate_drawdown(prices, weights=None):
     """
     Drawdown pour chaque actif ou un portefeuille.
     """
-    if weights is not None:
-        prices = (prices * weights).sum(axis=1)
+    if weights is not None and isinstance(prices, pd.DataFrame):
+        prices = prices.dot(weights)  # ✅ Applique correctement les poids
 
     peak = prices.cummax()
     drawdown = (prices - peak) / peak
 
     return drawdown
-
+    
 def max_drawdown(prices, weights=None):
     """
     Max Drawdown pour chaque actif ou un portefeuille.
