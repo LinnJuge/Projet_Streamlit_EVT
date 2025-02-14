@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from data_loader import get_data
 import seaborn as sns
 from risk_indicators import get_portfolio_returns, var_historique, var_monte_carlo, calculate_var, calculate_cvar, semi_deviation, annual_volatility, ewma_volatility, calculate_drawdown, max_drawdown  # Import des fonctions de risk_indicators.py
-from portfolio_allocation import *  # Import des fonctions de portfolio_optimization.py
+from portfolio_allocation import equal_weighted_portfolio, min_variance_portfolio # Import des fonctions de portfolio_optimization.py
 
 # Configuration de l'application
 st.set_page_config(page_title="Dashboard de Risque", layout="wide")
