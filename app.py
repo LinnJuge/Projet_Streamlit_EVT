@@ -117,7 +117,7 @@ if tickers:
             else:  # Un seul actif
                 st.write(f"**Volatilité Annualisée**: {annual_vol * 100:.2f} %")
                 st.write(f"**Volatilité EWMA**: {ewma_vol * 100:.2f} %")
-                st.write(f"**Semi-Deviation**: {semi_dev * 100:.2f} %"){semi_dev:.4f}")
+                st.write(f"**Semi-Deviation**: {semi_dev * 100:.2f} %")
 
         # 🎯 SECTION Drawdowns
         with st.expander("📉 Drawdowns"):
