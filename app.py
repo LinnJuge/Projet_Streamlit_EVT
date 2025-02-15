@@ -62,7 +62,7 @@ if tickers:
     #st.write("DEBUG - returns:", returns)
     #st.write("DEBUG - portfolio_returns:", portfolio_returns)
 
-    st.title("Risk Management Dashboard")
+    st.title("📉 Risk Management Dashboard 📈 ")
 
     # Tabs pour afficher les différentes sections
     tab1, tab2, tab3 = st.tabs(["📉 Risk Indicators", "📈 EVT", "⚠️ Stress Tests"])
@@ -97,7 +97,7 @@ if tickers:
                 
 
         # 🎯 SECTION VaR
-        with st.expander("🔍 Value at Risk "):
+        with st.expander("💸 Value at Risk "):
             # 🔹 Calcul des VaR
             var_param = calculate_var(portfolio_returns, confidence)
             var_hist = var_historique(portfolio_returns, confidence)
@@ -149,7 +149,7 @@ if tickers:
                 st.write(f"**Semi-Deviation**: {semi_dev * 100:.2f} %")
 
         # 🎯 SECTION Drawdowns
-        with st.expander("📉 Drawdowns"):
+        with st.expander("🔻 Drawdowns"):
             if isinstance(prices, pd.Series):  # Un seul actif ou portefeuille global
                 drawdowns = calculate_drawdown(prices)
                 max_dd = max_drawdown(prices)
