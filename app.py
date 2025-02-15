@@ -70,7 +70,7 @@ if tickers:
     with tab1:
         st.subheader("📉 Risk Indicators")
 
-        with st.expander("📊 Visualisations des Indicateurs de Risque"):
+        with st.expander("📊 Visualizations"):
             # 📌 **Si un seul actif ou un portefeuille**
             if isinstance(portfolio_returns, pd.Series):  
                 st.write("🔹 **Rendements avec VaR & CVaR**")
@@ -95,7 +95,7 @@ if tickers:
                 
 
         # 🎯 SECTION VaR
-        with st.expander("🔍 Value at Risk (VaR)"):
+        with st.expander("🔍 Value at Risk "):
             # 🔹 Calcul des VaR
             var_param = calculate_var(portfolio_returns, confidence)
             var_hist = var_historique(portfolio_returns, confidence)
@@ -112,18 +112,18 @@ if tickers:
             if isinstance(var_param, dict):  # Plusieurs actifs (dict)
                 for ticker in portfolio_returns.columns:
                     st.subheader(f"📌 {ticker}")
-                    st.write(f"**VaR Paramétrique**: {var_param[ticker] * 100:.2f} %")
-                    st.write(f"**VaR Historique**: {var_hist[ticker] * 100:.2f} %")
-                    st.write(f"**VaR Monte Carlo**: {var_mc[ticker] * 100:.2f} %")
+                    st.write(f"**Parametric VaR**: {var_param[ticker] * 100:.2f} %")
+                    st.write(f"**Historical VaR**: {var_hist[ticker] * 100:.2f} %")
+                    st.write(f"**Monte Carlo VaR**: {var_mc[ticker] * 100:.2f} %")
                     st.write(f"**CVaR (Conditional VaR)**: {cvar[ticker] * 100:.2f} %")
             else:  # Un seul actif (float)
-                st.write(f"**VaR Paramétrique**: {var_param * 100:.2f} %")
-                st.write(f"**VaR Historique**: {var_hist * 100:.2f} %")
-                st.write(f"**VaR Monte Carlo**: {var_mc * 100:.2f} %")
+                st.write(f"**Parametric VaR**: {var_param * 100:.2f} %")
+                st.write(f"**Historical VaR**: {var_hist * 100:.2f} %")
+                st.write(f"**Monte Carlo VaR**: {var_mc * 100:.2f} %")
                 st.write(f"**CVaR (Conditional VaR)**: {cvar * 100:.2f} %")
 
         # 🎯 SECTION Volatilité
-        with st.expander("📊 Volatilité"):
+        with st.expander("📊 Volatility"):
             # 🔹 Calcul des indicateurs de volatilité
             annual_vol = annual_volatility(portfolio_returns)
             ewma_vol = ewma_volatility(portfolio_returns)
@@ -138,12 +138,12 @@ if tickers:
             if isinstance(annual_vol, dict):  # Plusieurs actifs
                 for ticker in portfolio_returns.columns:
                     st.subheader(f"📌 {ticker}")
-                    st.write(f"**Volatilité Annualisée**: {annual_vol[ticker] * 100:.2f} %")
-                    st.write(f"**Volatilité EWMA**: {ewma_vol[ticker]*100:.2f} %")
+                    st.write(f"**Annual Volatility**: {annual_vol[ticker] * 100:.2f} %")
+                    st.write(f"**EWMA Volatility**: {ewma_vol[ticker]*100:.2f} %")
                     st.write(f"**Semi-Deviation**: {semi_dev[ticker]*100:.2f} %")
             else:  # Un seul actif
-                st.write(f"**Volatilité Annualisée**: {annual_vol * 100:.2f} %")
-                st.write(f"**Volatilité EWMA**: {ewma_vol * 100:.2f} %")
+                st.write(f"**Annual Volatility**: {annual_vol * 100:.2f} %")
+                st.write(f"**EWMA Volatility**: {ewma_vol * 100:.2f} %")
                 st.write(f"**Semi-Deviation**: {semi_dev * 100:.2f} %")
 
         # 🎯 SECTION Drawdowns
