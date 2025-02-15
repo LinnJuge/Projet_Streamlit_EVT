@@ -4,7 +4,7 @@ import numpy as np
 import yfinance as yf
 import matplotlib.pyplot as plt
 import seaborn as sns
-from data_loader import *
+from data_loader import get_data
 from risk_indicators import *  # Import des fonctions de risk_indicators.py
 from portfolio_optimization import *  # Import des fonctions de portfolio_optimization.py
 
