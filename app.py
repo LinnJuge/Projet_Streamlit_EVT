@@ -103,25 +103,27 @@ if tickers:
             st.write(f"**Volatilité EWMA**: {ewma_vol:.4f}")
             st.write(f"**Semi-Deviation**: {semi_dev:.4f}")
     # 🎯 SECTION Drawdowns
-    with st.expander("📉 Drawdowns"):
-        if isinstance(prices, pd.Series):  # Un seul actif ou portefeuille global
-            drawdowns = calculate_drawdown(prices)
-            max_dd = max_drawdown(prices)
+with st.expander("📉 Drawdowns"):
+    if isinstance(prices, pd.Series):  # Un seul actif ou portefeuille global
+        drawdowns = calculate_drawdown(prices)
+        max_dd = max_drawdown(prices)
 
-            # 📈 Graphique drawdown unique
-            st.line_chart(drawdowns)
-            st.write(f"**Max Drawdown**: {max_dd:.4f}")
+        # 📈 Graphique drawdown unique
+        st.line_chart(drawdowns)
+        st.write(f"**Max Drawdown**: {max_dd:.4f}")
 
-        elif mode == "Comparaison":  # Plusieurs actifs séparés
+    elif mode == "Comparaison":  # Plusieurs actifs séparés
+        if isinstance(prices, pd.DataFrame):  
             drawdowns = {ticker: calculate_drawdown(prices[ticker]) for ticker in prices.columns}
             max_dd = {ticker: max_drawdown(prices[ticker]) for ticker in prices.columns}
 
             for ticker in prices.columns:
-                with st.subheader(f"📌 {ticker}"):
-                    st.line_chart(drawdowns[ticker])
-                    st.write(f"**Max Drawdown**: {max_dd[ticker]:.4f}")
+                st.subheader(f"📌 {ticker}")
+                st.line_chart(drawdowns[ticker])
+                st.write(f"**Max Drawdown**: {max_dd[ticker]:.4f}")
 
-        elif mode == "Portefeuille":  # Drawdown pondéré pour un portefeuille
+    elif mode == "Portefeuille":  # Drawdown pondéré pour un portefeuille
+        if isinstance(prices, pd.DataFrame):  
             drawdowns = {ticker: calculate_drawdown(prices[ticker]) for ticker in prices.columns}
             max_dd = {ticker: max_drawdown(prices[ticker]) for ticker in prices.columns}
 
@@ -135,8 +137,8 @@ if tickers:
             st.write(f"**Max Drawdown du Portefeuille**: {portfolio_max_dd:.4f}")
 
             # 🔹 Affichage des drawdowns des actifs du portefeuille
-            with st.subheader("🔍 Détail des actifs"):
-                for ticker in prices.columns:
-                    with st.expander(f"📌 {ticker}"):
-                        st.line_chart(drawdowns[ticker])
-                        st.write(f"**Max Drawdown**: {max_dd[ticker]:.4f}")
+            st.subheader("🔍 Détail des actifs")
+            for ticker in prices.columns:
+                st.subheader(f"📌 {ticker}")
+                st.line_chart(drawdowns[ticker])
+                st.write(f"**Max Drawdown**: {max_dd[ticker]:.4f}")
