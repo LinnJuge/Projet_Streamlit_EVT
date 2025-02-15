@@ -160,7 +160,4 @@ if tickers:
                         st.line_chart(drawdowns[ticker])
                         st.write(f"**Max Drawdown**: {max_dd[ticker]:.4f}")
 
-            for ticker in prices.columns:
-                st.subheader(f"📌 {ticker}")
-                st.line_chart(drawdowns[ticker])
-                st.write(f"**Max Drawdown**: {max_dd[ticker]:.4f}")
+           
