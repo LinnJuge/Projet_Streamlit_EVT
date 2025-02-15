@@ -118,3 +118,35 @@ def semi_deviation(portfolio_returns):
     return {ticker: negative_returns[ticker].std() if not negative_returns[ticker].dropna().empty else 0.0
             for ticker in portfolio_returns.columns}
 
+
+
+
+def calculate_drawdown(prices):
+    """
+    Calcule le drawdown à partir des prix.
+    - Si un seul actif → retourne une Series
+    - Si plusieurs actifs → applique à chaque colonne et retourne un DataFrame
+    """
+    if isinstance(prices, pd.Series):  # Cas d'un seul actif
+        peak = prices.cummax()  # Valeur maximale atteinte
+        drawdown = (prices - peak) / peak
+        return drawdown
+
+    # Plusieurs actifs → Appliquer sur chaque colonne
+    return prices.apply(lambda x: (x - x.cummax()) / x.cummax(), axis=0)
+
+
+def max_drawdown(prices):
+    """
+    Calcule le Max Drawdown (drawdown le plus important atteint).
+    - Si un seul actif → retourne un float
+    - Si plusieurs actifs → applique à chaque colonne et retourne un dictionnaire {ticker: valeur}
+    """
+    drawdowns = calculate_drawdown(prices)
+
+    if isinstance(prices, pd.Series):  # Cas d'un seul actif
+        return drawdowns.min()
+
+    # Plusieurs actifs → Appliquer sur chaque colonne
+    return {ticker: drawdowns[ticker].min() for ticker in prices.columns}
+
