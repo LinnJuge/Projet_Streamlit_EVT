@@ -4,21 +4,19 @@ import numpy as np
 
 def get_data(tickers, start, end):
     """
-    Télécharge les prix de clôture de Yahoo Finance et calcule les log-retours.
-    Gère un seul actif ou plusieurs actifs.
+    Récupère les prix de clôture et calcule les rendements log des actifs sélectionnés.
     """
     df = yf.download(tickers, start=start, end=end)["Close"]
-
+    
     if df.empty:
-        print("⚠️ Aucune donnée récupérée. Vérifiez les tickers et la période sélectionnée.")
+        print("⚠️ Aucune donnée récupérée. Vérifiez les tickers et la période.")
         return None, None
 
     if isinstance(df, pd.Series):
-        df = df.to_frame(name=tickers)  # Convertir en DataFrame si un seul actif
+        df = df.to_frame(name=tickers)  # Convertir en DataFrame pour homogénéiser
 
-    df.dropna(inplace=True)  
-    returns = np.log(df / df.shift(1)).dropna()
+    df.dropna(inplace=True)  # Suppression des valeurs manquantes
+    returns = np.log(df / df.shift(1)).dropna()  # Rendements log
 
-    return df, returns  # Retourne les prix et les rendements
-
+    return df, returns  # Retourne les prix et rendements
 
