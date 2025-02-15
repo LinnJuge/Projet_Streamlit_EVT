@@ -27,3 +27,24 @@ def min_variance_portfolio(returns):
     result = minimize(portfolio_volatility, initial_guess, constraints=constraints, bounds=bounds)
     return result.x if result.success else initial_guess  # Si optimisation échoue, retourne équipondéré
 
+
+def get_portfolio_returns(returns, weights):
+    """
+    Calcule les rendements du portefeuille pondéré.
+    - Retourne une **Series** si un seul actif, sinon un **DataFrame** bien formaté.
+    """
+    if weights is not None:
+        weights = np.array(weights).reshape(-1)  # Assurer un tableau 1D
+
+        # Cas normal : Plusieurs actifs → DataFrame
+        if isinstance(returns, pd.DataFrame):
+            if len(weights) != returns.shape[1]:
+                raise ValueError(f"🚨 Erreur : Nombre d'actifs ({returns.shape[1]}) ≠ Nombre de poids ({len(weights)})")
+            return returns.dot(weights)  # Appliquer les poids
+
+        # Cas particulier : Un seul actif → Convertir en DataFrame avant dot()
+        elif isinstance(returns, pd.Series):
+            return returns.to_frame().dot(weights)[0]  # Convertir en DataFrame puis extraire le scalaire
+
+    return returns  # Si pas de pondération, retourner directement les rendements
+
