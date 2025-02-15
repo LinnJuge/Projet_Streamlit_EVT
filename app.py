@@ -62,7 +62,7 @@ if tickers:
     #st.write("DEBUG - returns:", returns)
     #st.write("DEBUG - portfolio_returns:", portfolio_returns)
 
-    st.title("📉 Risk Management Dashboard 📈 ")
+    st.title("📉 Risk Management Dashboard  ")
 
     # Tabs pour afficher les différentes sections
     tab1, tab2, tab3 = st.tabs(["📉 Risk Indicators", "📈 EVT", "⚠️ Stress Tests"])
@@ -84,7 +84,7 @@ if tickers:
                 # 🔹 Affichage des poids du portefeuille
                 if mode == "Portefeuille" and weights is not None:
                     weight_df = pd.DataFrame({"Actifs": tickers, "Poids": weights})
-                    st.write("📊 **Répartition des Poids dans le Portefeuille**")
+                    st.write("⚖️ **Répartition des Poids dans le Portefeuille**")
                     st.dataframe(weight_df.style.format({"Poids": "{:.2%}"}))
             else:  # 📌 **Si plusieurs actifs en comparaison**
                 for ticker in portfolio_returns.columns:
@@ -97,7 +97,7 @@ if tickers:
                 
 
         # 🎯 SECTION VaR
-        with st.expander("💸 Value at Risk "):
+        with st.expander("💰 Value at Risk "):
             # 🔹 Calcul des VaR
             var_param = calculate_var(portfolio_returns, confidence)
             var_hist = var_historique(portfolio_returns, confidence)
@@ -125,7 +125,7 @@ if tickers:
                 st.write(f"**CVaR (Conditional VaR)**: {cvar * 100:.2f} %")
 
         # 🎯 SECTION Volatilité
-        with st.expander("📊 Volatility"):
+        with st.expander("🎢 Volatility"):
             # 🔹 Calcul des indicateurs de volatilité
             annual_vol = annual_volatility(portfolio_returns)
             ewma_vol = ewma_volatility(portfolio_returns)
