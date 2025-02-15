@@ -85,15 +85,15 @@ if tickers:
             if isinstance(var_param, dict):  # Plusieurs actifs (dict)
                 for ticker in portfolio_returns.columns:
                     st.subheader(f"📌 {ticker}")
-                    st.write(f"**VaR Paramétrique**: {var_param[ticker]:.4f}")
-                    st.write(f"**VaR Historique**: {var_hist[ticker]:.4f}")
-                    st.write(f"**VaR Monte Carlo**: {var_mc[ticker]:.4f}")
-                    st.write(f"**CVaR (Conditional VaR)**: {cvar[ticker]:.4f}")
+                    st.write(f"**VaR Paramétrique**: {var_param[ticker] * 100:.2f} %")
+                    st.write(f"**VaR Historique**: {var_hist[ticker] * 100:.2f} %")
+                    st.write(f"**VaR Monte Carlo**: {var_mc[ticker] * 100:.2f} %")
+                    st.write(f"**CVaR (Conditional VaR)**: {cvar[ticker] * 100:.2f} %")
             else:  # Un seul actif (float)
-                st.write(f"**VaR Paramétrique**: {var_param:.4f}")
-                st.write(f"**VaR Historique**: {var_hist:.4f}")
-                st.write(f"**VaR Monte Carlo**: {var_mc:.4f}")
-                st.write(f"**CVaR (Conditional VaR)**: {cvar:.4f}")
+                st.write(f"**VaR Paramétrique**: {var_param * 100:.2f} %")
+                st.write(f"**VaR Historique**: {var_hist * 100:.2f} %")
+                st.write(f"**VaR Monte Carlo**: {var_mc * 100:.2f} %")
+                st.write(f"**CVaR (Conditional VaR)**: {cvar * 100:.2f} %")
 
         # 🎯 SECTION Volatilité
         with st.expander("📊 Volatilité"):
@@ -111,13 +111,13 @@ if tickers:
             if isinstance(annual_vol, dict):  # Plusieurs actifs
                 for ticker in portfolio_returns.columns:
                     st.subheader(f"📌 {ticker}")
-                    st.write(f"**Volatilité Annualisée**: {annual_vol[ticker]:.4f}")
-                    st.write(f"**Volatilité EWMA**: {ewma_vol[ticker]:.4f}")
-                    st.write(f"**Semi-Deviation**: {semi_dev[ticker]:.4f}")
+                    st.write(f"**Volatilité Annualisée**: {annual_vol[ticker] * 100:.2f} %")
+                    st.write(f"**Volatilité EWMA**: {ewma_vol[ticker]*100:.2f} %")
+                    st.write(f"**Semi-Deviation**: {semi_dev[ticker]*100:.2f} %")
             else:  # Un seul actif
-                st.write(f"**Volatilité Annualisée**: {annual_vol:.4f}")
-                st.write(f"**Volatilité EWMA**: {ewma_vol:.4f}")
-                st.write(f"**Semi-Deviation**: {semi_dev:.4f}")
+                st.write(f"**Volatilité Annualisée**: {annual_vol * 100:.2f} %")
+                st.write(f"**Volatilité EWMA**: {ewma_vol * 100:.2f} %")
+                st.write(f"**Semi-Deviation**: {semi_dev * 100:.2f} %"){semi_dev:.4f}")
 
         # 🎯 SECTION Drawdowns
         with st.expander("📉 Drawdowns"):
@@ -127,7 +127,7 @@ if tickers:
 
                 # 📈 Graphique drawdown unique
                 st.line_chart(drawdowns)
-                st.write(f"**Max Drawdown**: {max_dd:.4f}")
+                st.write(f"**Max Drawdown**: {max_dd * 100:.2f} %")
 
             elif mode == "Comparaison":  # Plusieurs actifs séparés
                 if isinstance(prices, pd.DataFrame):  
@@ -137,7 +137,7 @@ if tickers:
                     for ticker in prices.columns:
                         st.subheader(f"📌 {ticker}")
                         st.line_chart(drawdowns[ticker])
-                        st.write(f"**Max Drawdown**: {max_dd[ticker]:.4f}")
+                        st.write(f"**Max Drawdown**: {max_dd[ticker] * 100:.2f} %")
 
             elif mode == "Portefeuille":  # Drawdown pondéré pour un portefeuille
                 if isinstance(prices, pd.DataFrame):  
@@ -151,13 +151,13 @@ if tickers:
                     # 📈 Affichage du drawdown pondéré du portefeuille
                     st.subheader("📉 Drawdown du Portefeuille")
                     st.line_chart(portfolio_drawdown)
-                    st.write(f"**Max Drawdown du Portefeuille**: {portfolio_max_dd:.4f}")
+                    st.write(f"**Max Drawdown du Portefeuille**: {portfolio_max_dd * 100:.2f} %")
 
                     # 🔹 Affichage des drawdowns des actifs du portefeuille
                     st.subheader("🔍 Détail des actifs")
                     for ticker in prices.columns:
                         st.subheader(f"📌 {ticker}")
                         st.line_chart(drawdowns[ticker])
-                        st.write(f"**Max Drawdown**: {max_dd[ticker]:.4f}")
+                        st.write(f"**Max Drawdown**: {max_dd[ticker] * 100:.2f} %")
 
            
