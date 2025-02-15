@@ -44,13 +44,13 @@ if tickers:
     if mode == "Portefeuille":
         if allocation_type == "Équipondérée":
             weights = equal_weighted_portfolio(returns)
+            portfolio_returns = get_portfolio_returns(returns, weights)
         elif allocation_type == "MinVariance":
             weights = min_variance_portfolio(returns)
+            portfolio_returns = get_portfolio_returns(returns, weights)
         elif allocation_type == "Définir moi-même":
             weights = user_weights
-        else:
-            weights = None
-        portfolio_returns = get_portfolio_returns(returns, weights)
+            portfolio_returns = get_portfolio_returns(returns, weights)
     else:
         portfolio_returns = returns
     
