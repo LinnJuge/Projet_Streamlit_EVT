@@ -56,7 +56,7 @@ if tickers:
     
     # Tabs pour afficher les différentes sections
     # Tabs pour afficher les différentes sections
-    tab1, tab2, tab3, tab4 = st.tabs(["📉 Indicateurs de Risque", "📊 Volatilité", "📈 Rendements & VaR", "📉 Drawdowns"])
+    tab1, tab2, tab3 = st.tabs(["📉 Indicateurs de Risque", , "📈 EVT", "⚠️ Stress Tests"])
 
     with tab1:
         st.subheader("📉 Indicateurs de Risque")
@@ -101,3 +101,41 @@ if tickers:
             st.write(f"**Volatilité Annualisée**: {annual_vol:.4f}")
             st.write(f"**Volatilité EWMA**: {ewma_vol:.4f}")
             st.write(f"**Semi-Deviation**: {semi_dev:.4f}")
+    # 🎯 SECTION Drawdowns
+    with st.expander("📉 Drawdowns"):
+        if isinstance(prices, pd.Series):  # Un seul actif ou portefeuille global
+            drawdowns = calculate_drawdown(prices)
+            max_dd = max_drawdown(prices)
+
+            # 📈 Graphique drawdown unique
+            st.line_chart(drawdowns)
+            st.write(f"**Max Drawdown**: {max_dd:.4f}")
+
+        elif mode == "Comparaison":  # Plusieurs actifs séparés
+            drawdowns = {ticker: calculate_drawdown(prices[ticker]) for ticker in prices.columns}
+            max_dd = {ticker: max_drawdown(prices[ticker]) for ticker in prices.columns}
+
+            for ticker in prices.columns:
+                with st.expander(f"📌 {ticker}"):
+                    st.line_chart(drawdowns[ticker])
+                    st.write(f"**Max Drawdown**: {max_dd[ticker]:.4f}")
+
+        elif mode == "Portefeuille":  # Drawdown pondéré pour un portefeuille
+            drawdowns = {ticker: calculate_drawdown(prices[ticker]) for ticker in prices.columns}
+            max_dd = {ticker: max_drawdown(prices[ticker]) for ticker in prices.columns}
+
+            # Calcul du drawdown pondéré
+            portfolio_drawdown = sum(drawdowns[ticker] * weights[i] for i, ticker in enumerate(prices.columns))
+            portfolio_max_dd = sum(max_dd[ticker] * weights[i] for i, ticker in enumerate(prices.columns))
+
+            # 📈 Affichage du drawdown pondéré du portefeuille
+            st.subheader("📉 Drawdown du Portefeuille")
+            st.line_chart(portfolio_drawdown)
+            st.write(f"**Max Drawdown du Portefeuille**: {portfolio_max_dd:.4f}")
+
+            # 🔹 Affichage des drawdowns des actifs du portefeuille
+            with st.expander("🔍 Détail des actifs"):
+                for ticker in prices.columns:
+                    with st.expander(f"📌 {ticker}"):
+                        st.line_chart(drawdowns[ticker])
+                        st.write(f"**Max Drawdown**: {max_dd[ticker]:.4f}")
