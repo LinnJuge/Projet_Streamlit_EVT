@@ -56,7 +56,7 @@ if tickers:
     
     # Tabs pour afficher les différentes sections
     # Tabs pour afficher les différentes sections
-    tab1, tab2, tab3 = st.tabs(["📉 Indicateurs de Risque", , "📈 EVT", "⚠️ Stress Tests"])
+    tab1, tab2, tab3 = st.tabs(["📉 Indicateurs de Risque", "📈 EVT", "⚠️ Stress Tests"])
 
     with tab1:
         st.subheader("📉 Indicateurs de Risque")
