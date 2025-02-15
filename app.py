@@ -58,48 +58,49 @@ if tickers:
     tab1, tab2, tab3, tab4 = st.tabs(["📉 Indicateurs de Risque", "📊 Volatilité", "📈 Rendements & VaR", "📉 Drawdowns"])
     
     with tab1:
-        st.subheader("Indicateurs de Risque")
-        st.write("### VaR")
-        st.write("VaR Historique :", var_historique(portfolio_returns, confidence, weights))
-        st.write("VaR Paramétrique :", calculate_var(portfolio_returns, confidence, weights))
-        st.write("VaR Monte Carlo :", var_monte_carlo(portfolio_returns, confidence, weights=weights))
-        
-        st.write("### CVaR")
-        st.write("CVaR :", calculate_cvar(portfolio_returns, confidence, weights))
-    
-    with tab2:
-        st.subheader("Volatilité")
-        st.write("Volatilité Annualisée :", annual_volatility(portfolio_returns, weights=weights))
-        st.write("Volatilité EWMA :", ewma_volatility(portfolio_returns, weights=weights))
-        st.write("Semi-Deviation :", semi_deviation(portfolio_returns, weights=weights))
-    
-    with tab3:
-        st.subheader("Visualisation des rendements et VaR")
-        show_var_param = st.checkbox("Afficher VaR Paramétrique", value=True)
-        show_var_hist = st.checkbox("Afficher VaR Historique", value=True)
-        show_var_mc = st.checkbox("Afficher VaR Monte Carlo", value=True)
-        
-        fig, ax = plt.subplots(figsize=(12, 6))
-        sns.histplot(portfolio_returns, bins=50, kde=True, ax=ax, color="blue")
-        
-        if show_var_param:
-            ax.axvline(-calculate_var(portfolio_returns, confidence, weights), color='purple', linestyle='--', label='VaR Paramétrique')
-        if show_var_hist:
-            ax.axvline(-var_historique(portfolio_returns, confidence, weights), color='red', linestyle='--', label='VaR Historique')
-        if show_var_mc:
-            ax.axvline(-var_monte_carlo(portfolio_returns, confidence, weights=weights), color='green', linestyle='--', label='VaR Monte Carlo')
-        
-        ax.axvline(-calculate_cvar(portfolio_returns, confidence, weights), color='black', linestyle='-', linewidth=2, label='CVaR')
-        ax.legend()
-        st.pyplot(fig)
-    
-    with tab4:
-        st.subheader("Super Visualisation des Drawdowns")
-        drawdowns = calculate_drawdown(prices, weights)
-        fig, ax = plt.subplots(figsize=(12, 6))
-        drawdowns.plot(ax=ax, color='red')
-        ax.set_title("Drawdown Historique")
-        ax.set_ylabel("Drawdown (%)")
-        st.pyplot(fig)
-else:
-    st.write("## Veuillez sélectionner au moins un actif pour commencer l'analyse.")
+    st.subheader("📉 Indicateurs de Risque")
+
+    # 🎯 SECTION VaR
+    with st.expander("🔍 Value at Risk (VaR)"):
+        # 🔹 Calcul des VaR
+        var_param = calculate_var(portfolio_returns, confidence)
+        var_hist = var_historique(portfolio_returns, confidence)
+        var_mc = var_monte_carlo(portfolio_returns, confidence)
+        cvar = calculate_cvar(portfolio_returns, confidence)
+
+        # ✅ SI UN SEUL ACTIF / PORTEFEUILLE : Affichage simple
+        if isinstance(var_param, float):
+            st.write(f"**VaR Paramétrique**: {var_param:.4f}")
+            st.write(f"**VaR Historique**: {var_hist:.4f}")
+            st.write(f"**VaR Monte Carlo**: {var_mc:.4f}")
+            st.write(f"**CVaR (Conditional VaR)**: {cvar:.4f}")
+
+        # ✅ SI PLUSIEURS ACTIFS : Affichage sous expander
+        else:
+            for ticker in portfolio_returns.columns:
+                with st.expander(f"📌 {ticker}"):
+                    st.write(f"**VaR Paramétrique**: {var_param[ticker]:.4f}")
+                    st.write(f"**VaR Historique**: {var_hist[ticker]:.4f}")
+                    st.write(f"**VaR Monte Carlo**: {var_mc[ticker]:.4f}")
+                    st.write(f"**CVaR (Conditional VaR)**: {cvar[ticker]:.4f}")
+
+    # 🎯 SECTION Volatilité
+    with st.expander("📊 Volatilité"):
+        # 🔹 Calcul des indicateurs de volatilité
+        annual_vol = annual_volatility(portfolio_returns)
+        ewma_vol = ewma_volatility(portfolio_returns)
+        semi_dev = semi_deviation(portfolio_returns)
+
+        # ✅ SI UN SEUL ACTIF / PORTEFEUILLE : Affichage simple
+        if isinstance(annual_vol, float):
+            st.write(f"**Volatilité Annualisée**: {annual_vol:.4f}")
+            st.write(f"**Volatilité EWMA**: {ewma_vol:.4f}")
+            st.write(f"**Semi-Deviation**: {semi_dev:.4f}")
+
+        # ✅ SI PLUSIEURS ACTIFS : Affichage sous expander
+        else:
+            for ticker in portfolio_returns.columns:
+                with st.expander(f"📌 {ticker}"):
+                    st.write(f"**Volatilité Annualisée**: {annual_vol[ticker]:.4f}")
+                    st.write(f"**Volatilité EWMA**: {ewma_vol[ticker]:.4f}")
+                    st.write(f"**Semi-Deviation**: {semi_dev[ticker]:.4f}")
