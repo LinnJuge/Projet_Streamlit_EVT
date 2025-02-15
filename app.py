@@ -67,6 +67,41 @@ if tickers:
     with tab1:
         st.subheader("📉 Indicateurs de Risque")
 
+        with st.expander("📊 Visualisations des Indicateurs de Risque"):
+            # 📌 **Si un seul actif ou un portefeuille**
+            if isinstance(portfolio_returns, pd.Series):  
+                st.write("🔹 **Rendements avec VaR & CVaR**")
+                plot_var_cvar_graph(portfolio_returns, confidence)
+                
+                if len(tickers) > 1:  # Afficher la heatmap SEULEMENT si plusieurs actifs
+                    st.write("🔥 **Matrice de Corrélation des Actifs**")
+                    plot_correlation_heatmap(returns)  # Utiliser `returns` pour le portefeuille
+                # 🔹 Affichage des poids du portefeuille
+                if mode == "Portefeuille" and weights is not None:
+                    weight_df = pd.DataFrame({"Actifs": tickers, "Poids": weights})
+                    st.write("📊 **Répartition des Poids dans le Portefeuille**")
+                    st.dataframe(weight_df.style.format({"Poids": "{:.2%}"}))
+            else:  # 📌 **Si plusieurs actifs en comparaison**
+                for ticker in portfolio_returns.columns:
+                    st.write(f"📊 **{ticker} : Rendements avec VaR & CVaR**")
+                    plot_var_cvar_graph(portfolio_returns[ticker], confidence, title=f"VaR et CVaR pour {ticker}")
+                if len(portfolio_returns.columns) > 1:  # 🔥 Heatmap de corrélation entre actifs
+                    st.write("🔥 **Matrice de Corrélation entre Actifs**")
+                    plot_correlation_heatmap(portfolio_returns)  # Utiliser `portfolio_returns` ici
+                    
+                vol_data = pd.Series({ticker: annual_volatility(portfolio_returns[ticker]) * 100 for ticker in portfolio_returns.columns})
+                st.write("📊 **Comparaison des Volatilités des Actifs**")
+                plot_comparison_graphs(vol_data, title="Comparaison des Volatilités des Actifs", ylabel="Volatilité (%)", color_palette="Blues")
+                
+                var_data = pd.Series({ticker: calculate_var(portfolio_returns[ticker], confidence) * 100 for ticker in portfolio_returns.columns})
+                st.write(f"📊 **Comparaison des VaR à {confidence*100:.0f}% des Actifs**")
+                plot_comparison_graphs(var_data, title=f"Comparaison des VaR à {confidence*100:.0f}%", ylabel="VaR (%)", color_palette="Reds")
+                
+                cvar_data = pd.Series({ticker: calculate_cvar(portfolio_returns[ticker], confidence) * 100 for ticker in portfolio_returns.columns})
+                st.write(f"📊 **Comparaison des CVaR à {confidence*100:.0f}% des Actifs**"
+                plot_comparison_graphs(cvar_data, title=f"Comparaison des CVaR à {confidence*100:.0f}%", ylabel="CVaR (%)", color_palette="Oranges")
+
+
         # 🎯 SECTION VaR
         with st.expander("🔍 Value at Risk (VaR)"):
             # 🔹 Calcul des VaR
