@@ -74,7 +74,7 @@ if tickers:
         # ✅ SI UN SEUL ACTIF / PORTEFEUILLE : Affichage simple
         if isinstance(var_param, dict):  # Plusieurs actifs (dict)
             for ticker in portfolio_returns.columns:
-                with st.expander(f"📌 {ticker}"):
+                with st.subheader(f"📌 {ticker}"):
                     st.write(f"**VaR Paramétrique**: {var_param[ticker]:.4f}")
                     st.write(f"**VaR Historique**: {var_hist[ticker]:.4f}")
                     st.write(f"**VaR Monte Carlo**: {var_mc[ticker]:.4f}")
@@ -95,7 +95,7 @@ if tickers:
         # ✅ SI UN SEUL ACTIF / PORTEFEUILLE : Affichage simple
         if isinstance(annual_vol, dict):  # Plusieurs actifs
             for ticker in portfolio_returns.columns:
-                with st.expander(f"📌 {ticker}"):
+                with st.subheader(f"📌 {ticker}"):
                     st.write(f"**Volatilité Annualisée**: {annual_vol[ticker]:.4f}")
                     st.write(f"**Volatilité EWMA**: {ewma_vol[ticker]:.4f}")
                     st.write(f"**Semi-Deviation**: {semi_dev[ticker]:.4f}")
@@ -118,7 +118,7 @@ if tickers:
             max_dd = {ticker: max_drawdown(prices[ticker]) for ticker in prices.columns}
 
             for ticker in prices.columns:
-                with st.expander(f"📌 {ticker}"):
+                with st.subheader(f"📌 {ticker}"):
                     st.line_chart(drawdowns[ticker])
                     st.write(f"**Max Drawdown**: {max_dd[ticker]:.4f}")
 
@@ -136,7 +136,7 @@ if tickers:
             st.write(f"**Max Drawdown du Portefeuille**: {portfolio_max_dd:.4f}")
 
             # 🔹 Affichage des drawdowns des actifs du portefeuille
-            with st.expander("🔍 Détail des actifs"):
+            with st.subheader("🔍 Détail des actifs"):
                 for ticker in prices.columns:
                     with st.expander(f"📌 {ticker}"):
                         st.line_chart(drawdowns[ticker])
