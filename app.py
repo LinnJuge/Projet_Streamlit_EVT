@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from data_loader import get_data
 from risk_indicators import *  # Import des fonctions de risk_indicators.py
-from portfolio_optimization import *  # Import des fonctions de portfolio_optimization.py
+from portfolio_allocation import *  # Import des fonctions de portfolio_optimization.py
 
 # Configuration de l'application
 st.set_page_config(page_title="Dashboard de Risque", layout="wide")
