@@ -62,6 +62,8 @@ if tickers:
     #st.write("DEBUG - returns:", returns)
     #st.write("DEBUG - portfolio_returns:", portfolio_returns)
 
+    st.title("Risk Management Dashboard")
+
     # Tabs pour afficher les différentes sections
     tab1, tab2, tab3 = st.tabs(["📉 Risk Indicators", "📈 EVT", "⚠️ Stress Tests"])
 
