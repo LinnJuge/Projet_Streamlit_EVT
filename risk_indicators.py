@@ -9,10 +9,11 @@ def var_historique(portfolio_returns, confidence=0.95):
     """
     if isinstance(portfolio_returns, pd.Series):  # Un seul actif ou un portefeuille
         return abs(np.percentile(portfolio_returns.dropna(), (1 - confidence) * 100))
-    
+        #Retourne un float
     # Plusieurs actifs → Appliquer à chaque colonne
     return {ticker: abs(np.percentile(portfolio_returns[ticker].dropna(), (1 - confidence) * 100))
-            for ticker in portfolio_returns.columns}
+            for ticker in portfolio_returns.columns} 
+    #Retourne un dict {ticker : valeur}
 
 
 def calculate_var(portfolio_returns, confidence=0.95):
