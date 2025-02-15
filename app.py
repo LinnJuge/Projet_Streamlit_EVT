@@ -57,9 +57,9 @@ if tickers:
         portfolio_returns = returns
 
     # DEBUG: Vérifier le contenu des données avant calculs
-    st.write("DEBUG - prices:", prices)
-    st.write("DEBUG - returns:", returns)
-    st.write("DEBUG - portfolio_returns:", portfolio_returns)
+    #st.write("DEBUG - prices:", prices)
+    #st.write("DEBUG - returns:", returns)
+    #st.write("DEBUG - portfolio_returns:", portfolio_returns)
 
     # Tabs pour afficher les différentes sections
     tab1, tab2, tab3 = st.tabs(["📉 Indicateurs de Risque", "📈 EVT", "⚠️ Stress Tests"])
@@ -76,10 +76,10 @@ if tickers:
             cvar = calculate_cvar(portfolio_returns, confidence)
 
             # DEBUG: Vérification des valeurs calculées
-            st.write("DEBUG - var_param:", var_param)
-            st.write("DEBUG - var_hist:", var_hist)
-            st.write("DEBUG - var_mc:", var_mc)
-            st.write("DEBUG - cvar:", cvar)
+            #st.write("DEBUG - var_param:", var_param)
+            #st.write("DEBUG - var_hist:", var_hist)
+            #st.write("DEBUG - var_mc:", var_mc)
+            #st.write("DEBUG - cvar:", cvar)
 
             # ✅ SI UN SEUL ACTIF / PORTEFEUILLE : Affichage simple
             if isinstance(var_param, dict):  # Plusieurs actifs (dict)
@@ -103,9 +103,9 @@ if tickers:
             semi_dev = semi_deviation(portfolio_returns)
 
             # DEBUG: Vérification des valeurs calculées
-            st.write("DEBUG - annual_vol:", annual_vol)
-            st.write("DEBUG - ewma_vol:", ewma_vol)
-            st.write("DEBUG - semi_dev:", semi_dev)
+            #st.write("DEBUG - annual_vol:", annual_vol)
+            #st.write("DEBUG - ewma_vol:", ewma_vol)
+            #st.write("DEBUG - semi_dev:", semi_dev)
 
             # ✅ SI UN SEUL ACTIF / PORTEFEUILLE : Affichage simple
             if isinstance(annual_vol, dict):  # Plusieurs actifs
