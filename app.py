@@ -98,7 +98,7 @@ if tickers:
                 plot_comparison_graphs(var_data, title=f"Comparaison des VaR à {confidence*100:.0f}%", ylabel="VaR (%)", color_palette="Reds")
                 
                 cvar_data = pd.Series({ticker: calculate_cvar(portfolio_returns[ticker], confidence) * 100 for ticker in portfolio_returns.columns})
-                st.write(f"📊 **Comparaison des CVaR à {confidence*100:.0f}% des Actifs**"
+                st.write(f"📊 **Comparaison des CVaR à {confidence*100:.0f}% des Actifs**")
                 plot_comparison_graphs(cvar_data, title=f"Comparaison des CVaR à {confidence*100:.0f}%", ylabel="CVaR (%)", color_palette="Oranges")
 
 
