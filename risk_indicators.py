@@ -150,3 +150,46 @@ def max_drawdown(prices):
     # Plusieurs actifs → Appliquer sur chaque colonne
     return {ticker: drawdowns[ticker].min() for ticker in prices.columns}
 
+
+
+
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+def plot_var_cvar_graph(data, confidence, title="Distribution des Rendements & VaR/CVaR"):
+    """
+    Affiche un graphique de distribution des rendements avec la VaR et CVaR.
+    """
+    fig, ax = plt.subplots(figsize=(10, 5))
+    sns.histplot(data, kde=True, bins=50, ax=ax, color="blue", label="Rendements")
+
+    var_value = calculate_var(data, confidence)
+    cvar_value = calculate_cvar(data, confidence)
+
+    ax.axvline(-var_value, color='red', linestyle='dashed', label=f"VaR {confidence*100:.0f}%")
+    ax.axvline(-cvar_value, color='orange', linestyle='dashed', label=f"CVaR {confidence*100:.0f}%")
+
+    ax.set_title(title)
+    ax.legend()
+    st.pyplot(fig)
+
+def plot_correlation_heatmap(data, title="Matrice de Corrélation des Actifs"):
+    """
+    Affiche une heatmap de corrélation des actifs sélectionnés.
+    """
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sns.heatmap(data.corr(), annot=True, cmap="coolwarm", center=0, ax=ax)
+    ax.set_title(title)
+    st.pyplot(fig)
+
+def plot_comparison_graphs(data, title="Comparaison des Indicateurs", ylabel="Valeur", color_palette="Blues"):
+    """
+    Affiche un graphique comparatif des indicateurs de risque pour chaque actif.
+    """
+    fig, ax = plt.subplots(figsize=(10, 5))
+    sns.barplot(x=data.index, y=data.values, ax=ax, palette=color_palette)
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+    st.pyplot(fig)
+
