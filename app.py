@@ -59,7 +59,7 @@ if tickers:
     tab1, tab2, tab3, tab4 = st.tabs(["📉 Indicateurs de Risque", "📊 Volatilité", "📈 Rendements & VaR", "📉 Drawdowns"])
 
     with tab1:
-    st.subheader("📉 Indicateurs de Risque")
+        st.subheader("📉 Indicateurs de Risque")
 
     # 🎯 SECTION VaR
     with st.expander("🔍 Value at Risk (VaR)"):
