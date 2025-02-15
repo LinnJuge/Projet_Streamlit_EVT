@@ -1,6 +1,9 @@
 import numpy as np
 import scipy.stats as stats
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import streamlit as st
 
 def var_historique(portfolio_returns, confidence=0.95):
     """
@@ -154,8 +157,7 @@ def max_drawdown(prices):
 
 
 
-import matplotlib.pyplot as plt
-import seaborn as sns
+
 
 def plot_var_cvar_graph(data, confidence, title="Distribution des Rendements & VaR/CVaR"):
     """
