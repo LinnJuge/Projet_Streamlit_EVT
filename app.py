@@ -55,8 +55,9 @@ if tickers:
         portfolio_returns = returns
     
     # Tabs pour afficher les différentes sections
+    # Tabs pour afficher les différentes sections
     tab1, tab2, tab3, tab4 = st.tabs(["📉 Indicateurs de Risque", "📊 Volatilité", "📈 Rendements & VaR", "📉 Drawdowns"])
-    
+
     with tab1:
     st.subheader("📉 Indicateurs de Risque")
 
@@ -69,20 +70,18 @@ if tickers:
         cvar = calculate_cvar(portfolio_returns, confidence)
 
         # ✅ SI UN SEUL ACTIF / PORTEFEUILLE : Affichage simple
-        if isinstance(var_param, float):
-            st.write(f"**VaR Paramétrique**: {var_param:.4f}")
-            st.write(f"**VaR Historique**: {var_hist:.4f}")
-            st.write(f"**VaR Monte Carlo**: {var_mc:.4f}")
-            st.write(f"**CVaR (Conditional VaR)**: {cvar:.4f}")
-
-        # ✅ SI PLUSIEURS ACTIFS : Affichage sous expander
-        else:
+        if isinstance(var_param, dict):  # Plusieurs actifs (dict)
             for ticker in portfolio_returns.columns:
                 with st.expander(f"📌 {ticker}"):
                     st.write(f"**VaR Paramétrique**: {var_param[ticker]:.4f}")
                     st.write(f"**VaR Historique**: {var_hist[ticker]:.4f}")
                     st.write(f"**VaR Monte Carlo**: {var_mc[ticker]:.4f}")
                     st.write(f"**CVaR (Conditional VaR)**: {cvar[ticker]:.4f}")
+        else:  # Un seul actif (float)
+            st.write(f"**VaR Paramétrique**: {var_param:.4f}")
+            st.write(f"**VaR Historique**: {var_hist:.4f}")
+            st.write(f"**VaR Monte Carlo**: {var_mc:.4f}")
+            st.write(f"**CVaR (Conditional VaR)**: {cvar:.4f}")
 
     # 🎯 SECTION Volatilité
     with st.expander("📊 Volatilité"):
@@ -92,15 +91,13 @@ if tickers:
         semi_dev = semi_deviation(portfolio_returns)
 
         # ✅ SI UN SEUL ACTIF / PORTEFEUILLE : Affichage simple
-        if isinstance(annual_vol, float):
-            st.write(f"**Volatilité Annualisée**: {annual_vol:.4f}")
-            st.write(f"**Volatilité EWMA**: {ewma_vol:.4f}")
-            st.write(f"**Semi-Deviation**: {semi_dev:.4f}")
-
-        # ✅ SI PLUSIEURS ACTIFS : Affichage sous expander
-        else:
+        if isinstance(annual_vol, dict):  # Plusieurs actifs
             for ticker in portfolio_returns.columns:
                 with st.expander(f"📌 {ticker}"):
                     st.write(f"**Volatilité Annualisée**: {annual_vol[ticker]:.4f}")
                     st.write(f"**Volatilité EWMA**: {ewma_vol[ticker]:.4f}")
                     st.write(f"**Semi-Deviation**: {semi_dev[ticker]:.4f}")
+        else:  # Un seul actif
+            st.write(f"**Volatilité Annualisée**: {annual_vol:.4f}")
+            st.write(f"**Volatilité EWMA**: {ewma_vol:.4f}")
+            st.write(f"**Semi-Deviation**: {semi_dev:.4f}")
