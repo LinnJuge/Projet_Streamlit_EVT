@@ -10,7 +10,7 @@ from risk_indicators import *  # Import des fonctions de risk_indicators.py
 from portfolio_allocation import *  # Import des fonctions de portfolio_optimization.py
 
 # Configuration de l'application
-st.set_page_config(page_title="Dashboard de Risque", layout="wide")
+st.set_page_config(page_title="Risk Management Dashboard", layout="wide")
 
 # Sidebar - Sélection des actifs
 st.sidebar.header("Paramètres de l'étude")
@@ -63,10 +63,12 @@ if tickers:
     #st.write("DEBUG - portfolio_returns:", portfolio_returns)
 
     # Tabs pour afficher les différentes sections
-    tab1, tab2, tab3 = st.tabs(["📉 Indicateurs de Risque", "📈 EVT", "⚠️ Stress Tests"])
+    tab1, tab2, tab3 = st.tabs(["📉 Risk Indicators", "📈 EVT", "⚠️ Stress Tests"])
 
+    
+    ########################################### TAB 1##############################################
     with tab1:
-        st.subheader("📉 Indicateurs de Risque")
+        st.subheader("📉 Risk Indicators")
 
         with st.expander("📊 Visualisations des Indicateurs de Risque"):
             # 📌 **Si un seul actif ou un portefeuille**
@@ -185,4 +187,4 @@ if tickers:
                         st.line_chart(drawdowns[ticker])
                         st.write(f"**Max Drawdown**: {max_dd[ticker] * 100:.2f} %")
 
-           
+           ########################################### TAB 2##############################################
